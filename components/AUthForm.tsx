@@ -43,19 +43,24 @@ const AuthForm = ({ type }: { type: FormType }) => {
       fullName: "",
       email: "",
     },
-  })
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    try {
-      await form.trigger(); // Manually trigger validation to check if errors exist
-      console.log(values);
-    } catch (error) {
-      console.log(form.formState.errors); // Log errors to see if validation is happening
-      setErrormessage("An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  });
+  
+
+  
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  console.log(values)
+  setIsLoading(true);
+  try {
+    // Just log values here - no need to manually trigger validation
+    console.log(values);  // Values should now be logged
+  } catch (error) {
+    console.log(form.formState.errors);  // Log any errors if validation fails
+    setErrormessage("An error occurred. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
   
   return (
     <Form {...form}>
