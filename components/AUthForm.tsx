@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import Image from "next/image"
+import { createAccount } from "@/lib/actions/user.actiosn"
 
 // Define form type and schema
 type FormType = "sign-in" | "sign-up"
@@ -33,7 +34,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [errormessage, setErrormessage] = useState("")
-
+  const [accountId,setAccountId]= useState(null)
   // Use the appropriate schema based on form type
   const formSchema = authFormSchema(type)
 
@@ -47,19 +48,28 @@ const AuthForm = ({ type }: { type: FormType }) => {
   
 
   
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  console.log(values)
-  setIsLoading(true);
-  try {
-    // Just log values here - no need to manually trigger validation
-    console.log(values);  // Values should now be logged
-  } catch (error) {
-    console.log(form.formState.errors);  // Log any errors if validation fails
-    setErrormessage("An error occurred. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values); // Log the values received from the form
+    setIsLoading(true);
+    setErrormessage("");
+  
+    try {
+      // Create a user account
+      const user = await createAccount({
+        fullName: values.fullName || "", // Provide default empty string if fullName is undefined
+        email: values.email,            // Pass the email
+      });
+
+    setAccountId(user.accountId)
+      console.log("User created:", user); // Log the created user
+    } catch (error) {
+      console.error("Error creating account:", error); // Log the error
+      setErrormessage("An error occurred while creating account. Please try again.");
+    } finally {
+      setIsLoading(false); // Ensure the loading state is reset
+    }
+  };
+  
 
   
   return (
